@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
 
     'core',
+    'community_minutes',
 ]
 
 MIDDLEWARE_CLASSES = [
