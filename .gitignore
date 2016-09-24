@@ -2,3 +2,5 @@
 .*.sw*
 # Python code caches
 *.pyc
+# Vagrant
+solr/.vagrant
