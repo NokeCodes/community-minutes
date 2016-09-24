@@ -3,10 +3,10 @@ from django.db import models
 class Person(models.Model):
     """ Represents a person that can attend meetings """
     position = models.TextField()
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
 class Organization(models.Model):
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
 class Meeting(models.Model):
     date = models.DateField()
@@ -17,6 +17,7 @@ class Meeting(models.Model):
 class Attendance(models.Model):
     meeting = models.ForeignKey(Meeting)
     person = models.ForeignKey(Person)
+    present = models.BooleanField()
 
 class Movement(models.Model):
     title = models.TextField()
