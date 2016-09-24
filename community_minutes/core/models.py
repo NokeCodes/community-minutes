@@ -18,6 +18,7 @@ class Meeting(models.Model):
     place = models.TextField()
     docref = models.IntegerField()
     organization = models.ForeignKey(Organization)
+    attendees = models.ManyToManyField(Person, through='Attendance')
 
     def dictify(self):
         return {
@@ -37,6 +38,7 @@ class Movement(models.Model):
     description_ref = models.IntegerField()
     document_ref = models.IntegerField()
     meeting = models.ForeignKey(Meeting)
+    votes = models.ManyToManyField(Person, through='Vote')
 
     def dictify(self):
         return {
