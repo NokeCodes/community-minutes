@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using DataImport.Loading;
+using Nest;
 using System;
 
 namespace DataImport
@@ -13,6 +14,12 @@ namespace DataImport
             settings.MapDefaultTypeIndices(m => m.Add(typeof(MeetingNote), "meeting_notes_index"));
             var client = new ElasticClient(settings);
 
+            IDocumentLoader loader = new RSSDocumentLoader();
+            while(loader.MoreDocumentsExist())
+            {
+                Document doc = loader.GetNextDocument();
+                
+            }
             
             var response = client.Search<MeetingNote>(s => s
                 .From(0)
