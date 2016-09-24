@@ -5,3 +5,5 @@ django-libsass>=0.6
 django-debug-toolbar>=1.4
 gunicorn>=19.1.1
 Fabric>=1.10.0
+pyocr==0.4.1
+wand==0.4.3

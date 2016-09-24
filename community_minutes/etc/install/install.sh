@@ -67,3 +67,7 @@ if ! grep -Fqx $LOCAL_SETTINGS_PATH $PROJECT_DIR/.gitignore
 then
     echo $LOCAL_SETTINGS_PATH >> $PROJECT_DIR/.gitignore
 fi
+
+
+sudo apt-get install tesseract-ocr -y
+sudo apt-get install libmagickwand-dev -y
