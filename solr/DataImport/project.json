@@ -6,7 +6,8 @@
   },
   "dependencies": {
     "Quartz": "3.0.0-alpha2",
-    "NEST": "5.0.0-alpha3"
+    "NEST": "5.0.0-alpha3",
+    "System.Net.Http": "4.1.0"
   },
   "frameworks": {
     "netcoreapp1.0": {
