@@ -7,5 +7,9 @@ namespace DataImport.Loading
 {
     interface IDocumentLoader
     {
+        void SetAlreadyEnteredDocuments(IEnumerable<string> DocumentTitles);
+        string GetNextDocument();
+        bool MoreDocumentsExist();
+
     }
 }

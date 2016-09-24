@@ -9,7 +9,7 @@ namespace DataImport.Loading
     {
         private IEnumerable<string> _documentTitles;
 
-        public Document GetNextDocument()
+        public string GetNextDocument()
         {
             throw new NotImplementedException();
         }
