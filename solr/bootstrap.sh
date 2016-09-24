@@ -5,9 +5,8 @@ sudo apt-get upgrade
 sudo apt-get purge openjdk*
 sudo apt-get -y install openjdk-7-jdk
 # install ES
-wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list"
-sudo apt-get update && sudo apt-get install elasticsearch
+wget "https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.4.0/elasticsearch-2.4.0.deb"
+sudo dpkg -i elasticsearch-2.4.0.deb
 sudo update-rc.d elasticsearch defaults 95 10
 sudo /etc/init.d/elasticsearch start
 # either of the next two lines is needed to be able to access "localhost:9200" from the host os
@@ -20,3 +19,11 @@ sudo echo "script.indexed: on" >> /etc/elasticsearch/elasticsearch.yml
 sudo echo "http.cors.enabled: true" >> /etc/elasticsearch/elasticsearch.yml
 sudo echo "http.cors.allow-origin: /https?:\/\/.*/" >> /etc/elasticsearch/elasticsearch.yml
 sudo /etc/init.d/elasticsearch restart
+
+
+
+#installs .NET Core
+sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
+sudo apt-get update
+sudo apt-get install dotnet-dev-1.0.0-preview2-003131 -y
