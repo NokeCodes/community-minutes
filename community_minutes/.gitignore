@@ -1,0 +1,4 @@
+/.vagrant
+/static
+*.pyc
+/community_minutes/settings/local.py
