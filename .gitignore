@@ -6,3 +6,5 @@
 solr/.vagrant
 # Python virtualenv
 env
+solr/DataImport/bin/
+solr/DataImport/obj/
