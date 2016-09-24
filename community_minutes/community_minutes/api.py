@@ -35,3 +35,25 @@ def meeting(request, meeting):
         Movement.objects.filter(meeting__exact=meeting)
     ))
     return JsonResponse(data)
+
+def person(request, person):
+    try:
+        person = Person.objects.get(id__exact=int(person))
+    except:
+        msg = "Unable to locate person {0}"
+        raise Http404(msg.format(person))
+    data = {
+        'name': person.name,
+        'position': person.position
+    }
+    votes = list(map(lambda x: {
+            'yay': x.yay_vote,
+            'movement': {
+                'title': x.movement.title,
+                'id': x.movement.id,
+            }
+        },
+        Vote.objects.filter(person__exact=person)
+    ))
+    data['votes'] = votes
+    return JsonResponse(data)
