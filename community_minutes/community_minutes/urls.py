@@ -22,5 +22,6 @@ from . import api
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
-    url(r'^api/meeting/(?P<meeting>[0-9]+)', api.meeting)
+    url(r'^api/meeting/(?P<meeting>[0-9]+)', api.meeting),
+    url(r'^api/movement/(?P<movement>[0-9]+)', api.movement)
 ]

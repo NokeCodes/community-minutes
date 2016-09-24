@@ -8,11 +8,24 @@ class Person(models.Model):
 class Organization(models.Model):
     name = models.TextField(unique=True)
 
+    def dictify(self):
+        return {
+            'name': self.name,
+        }
+
 class Meeting(models.Model):
     date = models.DateField()
     place = models.TextField()
     docref = models.IntegerField()
     organization = models.ForeignKey(Organization)
+
+    def dictify(self):
+        return {
+            'date': self.date.isoformat(),
+            'place': self.place,
+            'doc': self.docref,
+            'organization': self.organization.dictify(),
+        }
 
 class Attendance(models.Model):
     meeting = models.ForeignKey(Meeting)
@@ -24,6 +37,14 @@ class Movement(models.Model):
     description_ref = models.IntegerField()
     document_ref = models.IntegerField()
     meeting = models.ForeignKey(Meeting)
+
+    def dictify(self):
+        return {
+            'title': self.title,
+            'document': self.document_ref,
+            'description': self.description_ref,
+            'meeting': self.meeting.dictify()
+        }
 
 class Vote(models.Model):
     person = models.ForeignKey(Person)
