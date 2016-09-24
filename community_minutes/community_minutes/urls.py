@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
     url(r'^api/meeting/(?P<meeting>[0-9]+)', api.meeting),
-    url(r'^api/movement/(?P<movement>[0-9]+)', api.movement)
+    url(r'^api/movement/(?P<movement>[0-9]+)', api.movement),
+    url(r'^api/person/(?P<person>[0-9]+)', api.person)
 ]
