@@ -8,3 +8,4 @@ solr/.vagrant
 env
 solr/DataImport/bin/
 solr/DataImport/obj/
+solr/DataImport/project.lock.json
