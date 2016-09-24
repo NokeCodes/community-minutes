@@ -1,0 +1,86 @@
+- model: core.Person
+  pk: 1
+  fields:
+    position: Council Member
+    name: John
+- model: core.Person
+  pk: 2
+  fields:
+    position: Council Member
+    name: Jimmy
+- model: core.Person
+  pk: 3
+  fields:
+    position: Council Member
+    name: Sarah
+- model: core.Person
+  pk: 4
+  fields:
+    position: Council Member
+    name: Rachel
+- model: core.Organization
+  pk: 1
+  fields:
+    name: City Council
+- model: core.Meeting
+  pk: 1
+  fields:
+    date: 2016-09-24
+    place: City hall
+    docref: 0
+    organization: 1
+- model: core.Attendance
+  pk: 1
+  fields:
+    meeting: 1
+    person: 1
+    present: True
+- model: core.Attendance
+  pk: 2
+  fields:
+    meeting: 1
+    person: 2
+    present: True
+- model: core.Attendance
+  pk: 3
+  fields:
+    meeting: 1
+    person: 3
+    present: True
+- model: core.Attendance
+  pk: 4
+  fields:
+    meeting: 1
+    person: 4
+    present: True
+- model: core.Movement
+  pk: 1
+  fields:
+    title: "Free cookies for everyone"
+    description_ref: 0
+    document_ref: 0
+    meeting: 1
+- model: core.Vote
+  pk: 1
+  fields:
+    person: 1
+    movement: 1
+    yay_vote: True
+- model: core.Vote
+  pk: 2
+  fields:
+    person: 2
+    movement: 1
+    yay_vote: True
+- model: core.Vote
+  pk: 3
+  fields:
+    person: 3
+    movement: 1
+    yay_vote: True
+- model: core.Vote
+  pk: 4
+  fields:
+    person: 4
+    movement: 1
+    yay_vote: True
