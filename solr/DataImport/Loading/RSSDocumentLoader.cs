@@ -9,6 +9,16 @@ namespace DataImport.Loading
     {
         private IEnumerable<string> _documentTitles;
 
+
+        public RSSDocumentLoader()
+        {
+            string documentTitle = "Test";
+            if(!_documentTitles.Contains(documentTitle))
+            {
+
+            }
+        }
+
         public string GetNextDocument()
         {
             throw new NotImplementedException();
