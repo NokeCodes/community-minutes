@@ -42,12 +42,12 @@ def handle():
     #es.delete(index="meeting_minutes"])
 
     for document in Document.GetDocuments():
-        with open('/tmp/file.pdf', 'w') as outf:
+        with open('/tmp/file.pdf', 'wb') as outf:
             r = requests.get(document, stream=True)
-            for chunk in r.iter_content:
+            for chunk in r.iter_content():
                 if not chunk:
                     continue
-                outf.write(r)
+                outf.write(chunk)
         text = convert_pdf_to_text('/tmp/file.pdf')
 
         previous_line = ""
