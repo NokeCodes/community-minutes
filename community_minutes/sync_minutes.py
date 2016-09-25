@@ -49,12 +49,14 @@ def handle():
                     continue
                 outf.write(chunk)
         text = convert_pdf_to_text('/tmp/file.pdf')
-
+        text2=""
         previous_line = ""
         two_lines_ago = ""
         three_lines_ago = ""
         votes = []
         for line in text:
+            if not line.strip().isdigit():
+                text2+=line
             if line.startswith('NAYS:'):
                 votes.append({
                     'Motion': two_lines_ago,
@@ -65,13 +67,14 @@ def handle():
             two_lines_ago = previous_line
             previous_line = line
 
+        text2.strip() 
         doc = {
             'organization': text[1],
             'meeting_date': text[2],
             'meeting_time': text[3],
             'url': document,
-            'separated_text': text,
-            'full_text': ''.join(text),
+            'separated_text': text2,
+            'full_text': ''.join(text2),
             'import_date': datetime.datetime.now(),
             'votes': votes
         }
