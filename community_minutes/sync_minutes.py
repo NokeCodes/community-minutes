@@ -41,8 +41,8 @@ def convert_pdf_to_text(path):
 
 def handle():
     print('Beginning doc loop')
-    es = Elasticsearch()
-    
+    es = Elasticsearch("192.168.1.71")
+
     for document in Document.GetDocuments():
         try:
             wget.download (document, "/tmp/file.pdf")
@@ -53,7 +53,9 @@ def handle():
                 'text': text,
                 'timestamp': datetime.datetime.now(),
             }
-            res = es.index(index="test-index", doc_type='tweet', body=doc)
+            res = es.index(index="meething_minutes", doc_type='tweet', body=doc)
+
+            print res
         except:
             raise CommandError()
 
