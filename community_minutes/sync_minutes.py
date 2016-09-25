@@ -42,13 +42,12 @@ def handle():
     #es.delete(index="meeting_minutes"])
 
     for document in Document.GetDocuments():
-            with open('/tmp/file.pdf', 'w') as outf:
-                r = requests.get(document, stream=True)
-                for chunk in r.iter_content:
-                    if not chunk:
-                        continue
-                    outf.write(r)
-        wget.download (document, "/tmp/file.pdf")
+        with open('/tmp/file.pdf', 'w') as outf:
+            r = requests.get(document, stream=True)
+            for chunk in r.iter_content:
+                if not chunk:
+                    continue
+                outf.write(r)
         text = convert_pdf_to_text('/tmp/file.pdf')
 
         previous_line = ""
@@ -77,8 +76,6 @@ def handle():
             'votes': votes
         }
         res = es.index(index="meeting_minutes", doc_type='meeting_minute', body=doc)
-
-
 
 
 handle()
