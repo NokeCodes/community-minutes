@@ -31,6 +31,12 @@ def meeting(request, meeting):
             'id': x.id,
             'title': x.title,
             'description': 'This is a description from elasticsearch',
+            'votes': list(map(lambda y: {
+                    'name': y.person.name,
+                    'yay': y.yay_vote,
+                },
+                Vote.objects.filter(movement__exact=x)
+            ))
         },
         Movement.objects.filter(meeting__exact=meeting)
     ))
