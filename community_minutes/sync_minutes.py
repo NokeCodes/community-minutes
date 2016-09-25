@@ -4,42 +4,56 @@ from PIL import Image as PI
 import pyocr
 import pyocr.builders
 import io
-import urllib
+import wget
+from pdfminer.pdfparser import PDFParser, PDFDocument
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import PDFPageAggregator
+from pdfminer.layout import LAParams, LTTextBox, LTTextLine
+from elasticsearch import Elasticsearch
+import datetime
 
 class Document:
     @staticmethod
     def GetDocuments():
         return ["http://www.roanokeva.gov/AgendaCenter/ViewFile/Minutes/04182016-115"]
 
+def convert_pdf_to_text(path):
+    fp = open(path, 'rb')
+    parser = PDFParser(fp)
+    doc = PDFDocument()
+    parser.set_document(doc)
+    doc.set_parser(parser)
+    doc.initialize('')
+    rsrcmgr = PDFResourceManager()
+    laparams = LAParams()
+    device = PDFPageAggregator(rsrcmgr, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    pdfText = []
+    # Process each page contained in the document.
+    for page in doc.get_pages():
+        interpreter.process_page(page)
+        layout = device.get_result()
+        for lt_obj in layout:
+            if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
+                pdfText.append(lt_obj.get_text())
+    return pdfText
+
+
 def handle():
     print('Beginning doc loop')
+    es = Elasticsearch()
     
     for document in Document.GetDocuments():
         try:
-            print('Loop')
-            print(document)
-            urllib.urlretrieve (document, "/tmp/file.pdf")
-            print('File downloaded')
-            tool = pyocr.get_available_tools()[0]
-            lang = tool.get_available_languages()[1]
-            print('Got tools and lagn')
-            req_image = []
-            final_text = []
-            image_pdf = Image(filename='/tmp/file.pdf', resolution=300)
-            image_jpeg = image_pdf.convert('jpeg')
-            print('Beginning image loop')
-            for img in image_jpeg.sequence:
-                img_page = Image(image=img)
-                req_image.append(img_page.make_blob('jpeg'))
-            print('Beginning req_image loop')
-            for img in req_image: 
-                txt = tool.image_to_string(
-                    PI.open(io.BytesIO(img)),
-                    lang=lang,
-                    builder=pyocr.builders.TextBuilder()
-                )
-                final_text.append(txt)
-            print('Done')
+            wget.download (document, "/tmp/file.pdf")
+            text = convert_pdf_to_text('/tmp/file.pdf')
+            doc = {
+                'author': 'kimchy',
+                'url': document,
+                'text': text,
+                'timestamp': datetime.datetime.now(),
+            }
+            res = es.index(index="test-index", doc_type='tweet', body=doc)
         except:
             raise CommandError()
 
