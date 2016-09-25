@@ -5,7 +5,7 @@ from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfparser import PDFParser, PDFDocument
 import datetime
-import wget
+import requests
 
 class Document:
     @staticmethod
@@ -40,6 +40,12 @@ def handle():
 
     for document in Document.GetDocuments():
         try:
+            with open('/tmp/file.pdf', 'w') as outf:
+                r = requests.get(document, stream=True)
+                for chunk in r.iter_content:
+                    if not chunk:
+                        continue
+                    outf.write(r)
             wget.download (document, "/tmp/file.pdf")
             text = convert_pdf_to_text('/tmp/file.pdf')
             doc = {
