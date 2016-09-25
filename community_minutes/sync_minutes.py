@@ -65,7 +65,7 @@ def handle():
             print('Not enough text blocks, probably an image based PDF')
             print('will not parse')
             continue
-		text2 = ""
+        full_text = ""
 
         previous_line = ""
         two_lines_ago = ""
@@ -73,31 +73,36 @@ def handle():
         votes = []
         for line in text:
             if not line.strip().isdigit():
-                text2+=line
+                full_text += line.strip() + '\n'
             if line.startswith('NAYS:'):
+                ayes = previous_line.replace('A YES: Council Members ', '') \
+                            .replace('AYES: Council Members ', '') \
+                            .replace(' and ', ', ') \
+                            .replace("\n", ' ') \
+                            .split(',')
+                ayes = filter(lambda x: len(x) > 2, map(lambda x: x.strip(), ayes))
+                ayes = list(ayes)
+                nays = line.replace(' and ', ', ') \
+                            .replace("\n", ' ') \
+                            .split(',')
+                if len(nays) > 0 and '0' in nays[0]:
+                    nays = []
                 votes.append({
                     'Motion': two_lines_ago,
-                    'AYES': previous_line.replace('A YES: Council Members ', '')
-                        .replace('AYES: Council Members ', '')
-                        .replace(' and ', ', ')
-                        .replace("\n", ' ')
-                        .split(','),
-                    'NAYS': line.replace(' and ', ', ')
-                        .replace("\n", ' ')
-                        .split(',')
+                    'AYES': list(ayes),
+                    'NAYS': nays
                 })
             three_lines_ago = two_lines_ago
             two_lines_ago = previous_line
             previous_line = line
 
-        text2.strip() 
         doc = {
             'organization': text[1],
             'meeting_date': text[2],
             'meeting_time': text[3],
             'url': document,
-            'separated_text': text2,
-            'full_text': ''.join(text2),
+            'separated_text': text,
+            'full_text': full_text,
             'import_date': datetime.datetime.now(),
             'votes': votes
         }
