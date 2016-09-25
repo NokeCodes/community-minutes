@@ -45,6 +45,12 @@ def convert_pdf_to_text(path):
 def handle():
     print('Beginning doc loop')
     es = Elasticsearch("192.168.1.71")
+	#Replace phrase with userdata to be searched
+    phrase="Test String To Be Replaced"
+    lineNumCount=0
+    phraseFinal=""
+    lineNum=[]
+    lineCounter=0
     
     #es.delete(index="meeting_minutes"])
 
@@ -72,8 +78,13 @@ def handle():
         three_lines_ago = ""
         votes = []
         for line in text:
+            lineCounter=lineCounter+1
             if not line.strip().isdigit():
                 full_text += line.strip() + '\n'
+                #testCount=testCount+1
+                #print(testCount)
+            if phrase in line:
+                lineNum.append(lineCounter)
             if line.startswith('NAYS:'):
                 ayes = previous_line.replace('A YES: Council Members ', '') \
                             .replace('AYES: Council Members ', '') \
@@ -95,11 +106,12 @@ def handle():
             three_lines_ago = two_lines_ago
             two_lines_ago = previous_line
             previous_line = line
-
+            
         doc = {
             'organization': text[1],
             'meeting_date': text[2],
             'meeting_time': text[3],
+            'paragraph': lineNum,
             'url': document,
             'separated_text': text,
             'full_text': full_text,
