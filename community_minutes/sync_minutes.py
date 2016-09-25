@@ -45,7 +45,7 @@ def convert_pdf_to_text(path):
 def handle():
     print('Beginning doc loop')
     es = Elasticsearch("192.168.1.71")
-	#Replace phrase with userdata to be searched
+    #Replace phrase with userdata to be searched
     phrase="Test String To Be Replaced"
     lineNumCount=0
     phraseFinal=""
@@ -106,7 +106,7 @@ def handle():
             three_lines_ago = two_lines_ago
             two_lines_ago = previous_line
             previous_line = line
-            
+
         doc = {
             'organization': text[1],
             'meeting_date': text[2],
