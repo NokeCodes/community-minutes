@@ -59,8 +59,14 @@ def handle():
             if line.startswith('NAYS:'):
                 votes.append({
                     'Motion': two_lines_ago,
-                    'AYES': previous_line.replace('A YES: Council Members ', '').replace('AYES: Council Members ', '').replace(' and ', ', ').replace("\n", ' ').split(','),
-                    'NAYS': line.replace(' and ', ', ').replace("\n", ' ').split(',')
+                    'AYES': previous_line.replace('A YES: Council Members ', '')
+                        .replace('AYES: Council Members ', '')
+                        .replace(' and ', ', ')
+                        .replace("\n", ' ')
+                        .split(','),
+                    'NAYS': line.replace(' and ', ', ')
+                        .replace("\n", ' ')
+                        .split(',')
                 })
             three_lines_ago = two_lines_ago
             two_lines_ago = previous_line
