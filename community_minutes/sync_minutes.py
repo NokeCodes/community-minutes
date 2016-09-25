@@ -17,6 +17,7 @@ class Document:
     def GetDocuments():
         return ["http://www.roanokeva.gov/AgendaCenter/ViewFile/Minutes/04182016-115"]
 
+
 def convert_pdf_to_text(path):
     fp = open(path, 'rb')
     parser = PDFParser(fp)
@@ -42,23 +43,40 @@ def convert_pdf_to_text(path):
 def handle():
     print('Beginning doc loop')
     es = Elasticsearch("192.168.1.71")
+    
+    #es.delete(index="meeting_minutes"])
 
     for document in Document.GetDocuments():
-        try:
-            wget.download (document, "/tmp/file.pdf")
-            text = convert_pdf_to_text('/tmp/file.pdf')
-            doc = {
-                'organization': text[1],
-                'meeting_date': text[2],
-                'meeting_time': text[3],
-                'url': document,
-                'seperated_text': text,
-                'full_text': ''.join(text),
-                'import_date': datetime.datetime.now(),
-            }
-            res = es.index(index="meething_minutes", doc_type='meeting_minute', body=doc)
-        except:
-            raise CommandError()
+        wget.download (document, "/tmp/file.pdf")
+        text = convert_pdf_to_text('/tmp/file.pdf')
+
+        previous_line = ""
+        two_lines_ago = ""
+        three_lines_ago = ""
+        votes = []
+        for line in text:
+            if line.startswith('NAYS:'):
+                votes.append({
+                    'Motion': two_lines_ago,
+                    'AYES': previous_line.replace('A YES: Council Members ', '').replace('AYES: Council Members ', '').replace(' and ', ', ').replace("\n", ' ').split(','),
+                    'NAYS': line.replace(' and ', ', ').replace("\n", ' ').split(',')
+                })
+            three_lines_ago = two_lines_ago
+            two_lines_ago = previous_line
+            previous_line = line
+
+        doc = {
+            'organization': text[1],
+            'meeting_date': text[2],
+            'meeting_time': text[3],
+            'url': document,
+            'separated_text': text,
+            'full_text': ''.join(text),
+            'import_date': datetime.datetime.now(),
+            'votes': votes
+        }
+        res = es.index(index="meeting_minutes", doc_type='meeting_minute', body=doc)
+
 
 
 
