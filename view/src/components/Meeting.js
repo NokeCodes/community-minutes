@@ -4,8 +4,8 @@ import Attendance from './Attendance';
 import Movements from './Movements';
 
 
-const Meeting = ({meeting, attendees, movements, route}) => (
-	<Card>
+const Meeting = ({meeting, attendees, movements, route, style}) => (
+	<Card style={{margin: '15px'}}>
 		<CardHeader
 			title={`${meeting.date} - ${meeting.place}`}/>
 		<CardText>

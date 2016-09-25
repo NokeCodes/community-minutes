@@ -1,84 +1,53 @@
 import React from 'react';
 import Title from './Title';
 import _ from 'lodash';
-import {List, ListItem, MakeSelectable} from 'material-ui/List';
+import {List} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import Divider from 'material-ui/Divider';
+import Paper from 'material-ui/Paper';
 
-let SelectableList = MakeSelectable(List);
-
-function wrapState(ComposedComponent) {
-  return class SelectableList extends React.Component {
-    static propTypes = {
-      children: React.PropTypes.node.isRequired,
-      defaultValue: React.PropTypes.number.isRequired,
-    };
-
-    componentWillMount() {
-      this.setState({
-        selectedIndex: this.props.defaultValue,
-      });
-    }
-
-    handleRequestChange = (event, index) => {
-      this.setState({
-        selectedIndex: index,
-      });
-    };
-
-    render() {
-      return (
-        <ComposedComponent
-          value={this.state.selectedIndex}
-          onChange={this.handleRequestChange}
-        >
-          {this.props.children}
-        </ComposedComponent>
-      );
-    }
-  };
-}
-
-SelectableList = wrapState(SelectableList);
-
-const InsetWrapper = ({title, body, Container, data}) => {
-	// console.log(title);
-	// console.log(body);
-	// console.log(Container);
-	// console.log(data);
-	if (_.isArray(data)) {
-		return (
-			<div>
-				<Title title={title} />
-				<SelectableList>
-					{data.map((e, i) => {
-						return (
-							<ListItem
-								key={i}
-								value={i}
-								primaryText='test'>
-								<Container data={e} />
-							</ListItem>
-						)
-					})}
-				</SelectableList>
-			</div>
-		)
-	} else if (data) {
-		return (<Container data={data} />)
-	} else {
-		return 'No Data';
+export default class InsetWrapper extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			selectedIndex: 0
+		};
+		props = {
+			title: '',
+			data: []
+		}
 	}
+
+	propTypes: {
+			title: React.PropTypes.string,
+			body: React.PropTypes.string,
+			Container: React.PropTypes.func,
+			data: React.PropTypes.any,
+	}
+
+	render() {
+		if (_.isArray(this.props.data)) {
+			return (
+				<div>
+					<List defaultValue={0}>
+						{this.props.data.map((e, i) => {
+							return (
+								<this.props.Container key={i} isOpen={this.state.open} data={e} />
+							)
+						})}
+					</List>
+				</div>
+			)
+		} else if (this.props.data) {
+			return (
+				<div>
+					<Title title={this.props.title} />
+					<this.props.Container data={this.props.data} />
+				</div>
+			)
+		} else {
+			return (<div>'No Data'</div>);
+		}
+	}
+
 }
-;
-
-// InsetWrapper.propTypes = {
-// 	title: React.PropTypes.string.isRequired,
-// 	Container: React.PropTypes.func.isRequired,
-// 	body: React.PropTypes.string,
-// 	data: React.PropTypes.oneOfType([
-// 		React.PropTypes.array,
-// 		React.PropTypes.object
-// 	])
-// };
-
-export default InsetWrapper;

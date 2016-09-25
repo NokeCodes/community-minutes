@@ -1,23 +1,47 @@
 import React from 'react';
+import { ListItem } from 'material-ui/List';
+import _ from 'lodash';
 import {Flex, Box} from 'reflexbox';
-import Paper from 'material-ui/Paper';
 // import InsetWrapper from './InsetWrapper';
-
-const Movement = ({data}) => {
-	return (
-			<Flex col={12}>
-				<Box col={12}>
-					<h4>{`${data.title} - ${data.id}`} </h4>
-					<p>{data.description} </p>
-				</Box>
-				<Box col={12}>
-					<p>Votes go here</p>
-				</Box>
-			</Flex>
-	);
+const Movement = ({data, i, key, isOpen}) => {
+  console.log(data.meeting.title);
+  return (
+      <ListItem
+        key={key}
+        value={i}
+        primaryText={
+          <Flex col={12}>
+            <Box col={6}>{`${data.meeting.date} - ${data.meeting.organization.name}`}</Box>
+            <Box col={6}>{
+              `Num Aye: ${_.sumBy(data.votes, e => {
+                return e.yay
+              })}
+                Num Nay: ${_.sumBy(data.votes, e => {
+                return !e.yay
+              })}`
+            }</Box>
+          </Flex>
+        }
+        secondaryText={data.title}
+        secondaryTextLines={3}
+        primaryTogglesNestedList={true}
+        open={isOpen}
+        nestedItems={
+          data.votes.map((e, i) => {
+            return (
+              <ListItem
+                value={i}
+                primaryText={e.person}
+                secondaryText={`vote: ${e.yay ? 'aye' : 'nay'}`}
+              />
+            )
+          })
+        }>
+      </ListItem>
+  );
 }
 Movement.propTypes = {
-	data: React.PropTypes.object.isRequired
+  data: React.PropTypes.object.isRequired
 };
 
 export default Movement;
