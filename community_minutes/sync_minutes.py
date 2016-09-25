@@ -51,6 +51,49 @@ def handle():
     phraseFinal=""
     lineNum=[]
     lineCounter=0
+
+    es.indices.delete(index='meeting_minutes')
+    es.indices.create(index='meeting_minutes')
+    es.indices.put_mapping(index='meeting_minutes', doc_type='meeting_minute', body={
+        "properties" : {
+          "full_text" : {
+            "type" : "string"
+          },
+          "import_date" : {
+            "type" : "date",
+            "format" : "strict_date_optional_time||epoch_millis"
+          },
+          "meeting_date" : {
+            "type" : "string"
+          },
+          "meeting_time" : {
+            "type" : "string"
+          },
+          "organization" : {
+            "type" : "string"
+          },
+          "separated_text" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          },
+          "votes" : {
+            "type": "nested",
+            "properties": {
+              "AYES" : {
+                "type" : "string"
+              },
+              "Motion" : {
+                "type" : "string"
+              },
+              "NAYS" : {
+                "type" : "string"
+              }
+            }
+          }
+        }
+    })
     
     #es.delete(index="meeting_minutes"])
 
