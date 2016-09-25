@@ -1,16 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
-from wand.image import Image
-from PIL import Image as PI
-import pyocr
-import pyocr.builders
-import io
-import wget
-from pdfminer.pdfparser import PDFParser, PDFDocument
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from bs4 import BeautifulSoup
+from elasticsearch import Elasticsearch
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine
-from elasticsearch import Elasticsearch
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.pdfparser import PDFParser, PDFDocument
 import datetime
+import wget
 
 class Document:
     @staticmethod
