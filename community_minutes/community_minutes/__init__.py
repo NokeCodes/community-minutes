@@ -1,4 +1,4 @@
-from flask import Flask, g, json
+from flask import Flask, g, json, request
 from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
@@ -41,10 +41,8 @@ def hello():
 #   "document": 0
 # }
 #
-@app.route("/api/movements")
-def movement():
-    q = {'query': {'match_all': {}}}
-    res = g.es.search(index='meeting_minutes', body=q)
+def format_movements(query):
+    res = g.es.search(index='meeting_minutes', body=query)
     data = res['hits']['hits']
     movements = []
     for meeting in data:
@@ -70,3 +68,23 @@ def movement():
             }
             movements.append(mv)
     return json.jsonify(movements)
+
+@app.route('/api/movements')
+def movement():
+    q = {'query': {'match_all': {}}}
+    return format_movements(q)
+
+@app.route('/api/movements/search')
+def movement_search():
+    q = request.args.get('q')
+    q = {
+        'query': {
+            'match': {
+                'votes.Motion': q
+            }
+        }
+        '_source': [
+            'votes.Motion'
+        ]
+    }
+    return format_movements(q)
