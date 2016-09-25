@@ -7,11 +7,19 @@ from pdfminer.pdfparser import PDFParser, PDFDocument
 import datetime
 import requests
 
-class Document:
-    @staticmethod
-    def GetDocuments():
-        return ["http://www.roanokeva.gov/AgendaCenter/ViewFile/Minutes/04182016-115"]
-
+def get_document_urls():
+    r = requests.get('http://www.roanokeva.gov/agendacenter')
+    soup = BeautifulSoup(r.text)
+    docs = []
+    for tag in soup.find_all('td', attrs={'class': 'minutes'}):
+        anchor = tag.find('a')
+        if not anchor:
+            continue
+        rel = anchor['href']
+        if rel[0] == '/':
+            rel = 'http://www.roanokeva.gov' + rel
+        docs.append(rel)
+    return docs
 
 def convert_pdf_to_text(path):
     fp = open(path, 'rb')
@@ -34,22 +42,31 @@ def convert_pdf_to_text(path):
                 pdfText.append(lt_obj.get_text())
     return pdfText
 
-
 def handle():
     print('Beginning doc loop')
     es = Elasticsearch("192.168.1.71")
     
     #es.delete(index="meeting_minutes"])
 
-    for document in Document.GetDocuments():
+    for document in get_document_urls():
+        print('Parse document', document)
         with open('/tmp/file.pdf', 'wb') as outf:
             r = requests.get(document, stream=True)
             for chunk in r.iter_content():
                 if not chunk:
                     continue
                 outf.write(chunk)
-        text = convert_pdf_to_text('/tmp/file.pdf')
-        text2=""
+        try:
+            text = convert_pdf_to_text('/tmp/file.pdf')
+        except:
+            print('Failed to parse')
+            continue
+        if len(text) < 20:
+            print('Not enough text blocks, probably an image based PDF')
+            print('will not parse')
+            continue
+		text2 = ""
+
         previous_line = ""
         two_lines_ago = ""
         three_lines_ago = ""
@@ -60,8 +77,14 @@ def handle():
             if line.startswith('NAYS:'):
                 votes.append({
                     'Motion': two_lines_ago,
-                    'AYES': previous_line.replace('A YES: Council Members ', '').replace('AYES: Council Members ', '').replace(' and ', ', ').replace("\n", ' ').split(','),
-                    'NAYS': line.replace(' and ', ', ').replace("\n", ' ').split(',')
+                    'AYES': previous_line.replace('A YES: Council Members ', '')
+                        .replace('AYES: Council Members ', '')
+                        .replace(' and ', ', ')
+                        .replace("\n", ' ')
+                        .split(','),
+                    'NAYS': line.replace(' and ', ', ')
+                        .replace("\n", ' ')
+                        .split(',')
                 })
             three_lines_ago = two_lines_ago
             two_lines_ago = previous_line
