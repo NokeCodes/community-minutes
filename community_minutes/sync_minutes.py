@@ -48,14 +48,15 @@ def handle():
             wget.download (document, "/tmp/file.pdf")
             text = convert_pdf_to_text('/tmp/file.pdf')
             doc = {
-                'author': 'kimchy',
+                'organization': text[1],
+                'meeting_date': text[2],
+                'meeting_time': text[3],
                 'url': document,
-                'text': text,
-                'timestamp': datetime.datetime.now(),
+                'seperated_text': text,
+                'full_text': ''.join(text),
+                'import_date': datetime.datetime.now(),
             }
-            res = es.index(index="meething_minutes", doc_type='tweet', body=doc)
-
-            print res
+            res = es.index(index="meething_minutes", doc_type='meeting_minute', body=doc)
         except:
             raise CommandError()
 
